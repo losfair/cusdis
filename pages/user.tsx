@@ -1,6 +1,7 @@
 import { User } from "@prisma/client"
 import { Box, Button, Checkbox, Container, FormControl, FormLabel, Heading, HStack, Input, InputGroup, InputRightAddon, Switch, useToast, VStack } from "@chakra-ui/react"
 import React from "react"
+import { signOut } from "next-auth/client"
 import { useMutation } from "react-query"
 import { Footer } from "../components/Footer"
 import { Navbar } from "../components/Navbar"
@@ -20,6 +21,11 @@ const updateUserSettings = async (params: {
   return res.data
 }
 
+const deleteUser = async() => {
+  const res = await apiClient.delete(`/user`)
+  return res.data
+}
+
 function UserPage(props: {
   session: UserSession,
   defaultUserInfo: DefaultUserInfo
@@ -27,6 +33,7 @@ function UserPage(props: {
 
   const updateNotificationEmailMutation = useMutation(updateUserSettings)
   const updatePreferenceMutation = useMutation(updateUserSettings)
+  const deleteUserMutation = useMutation(deleteUser)
 
   const toast = useToast()
 
@@ -49,6 +56,7 @@ function UserPage(props: {
       notificationEmail: value
     }, {
       onSuccess() {
+        signOut()
         toast({
           title: 'Updated',
           status: 'success',
@@ -73,6 +81,26 @@ function UserPage(props: {
           status: 'success',
           position: 'top'
         })
+      },
+      onError() {
+        toast({
+          title: 'Something went wrong',
+          status: 'error',
+          position: 'top'
+        })
+      }
+    })
+  }
+
+  function onClickDeleteAccount() {
+    deleteUserMutation.mutate(null, {
+      onSuccess() {
+        toast({
+          title: 'Deleted',
+          status: 'success',
+          position: 'top'
+        })
+        signOut()
       },
       onError() {
         toast({
@@ -129,6 +157,13 @@ function UserPage(props: {
                   })
                 }} defaultChecked={props.defaultUserInfo.enableNewCommentNotification}>New comment notification</Checkbox>
               </FormControl>
+            </VStack>
+          </VStack>
+              
+          <VStack alignItems="flex-start" spacing={4}>
+            <Heading size="md">Danger Zone</Heading>
+            <VStack spacing={4}>
+              <Button colorScheme="red" onClick={onClickDeleteAccount}>Delete Account</Button>
             </VStack>
           </VStack>
 
