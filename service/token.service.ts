@@ -31,7 +31,7 @@ export module TokenBody {
 
 export class TokenService {
   validate(token: string, secretKey: string) {
-    const result = jwt.verify(token, `${resolvedConfig.jwtSecret}-${secretKey}`)
+    const result = <any>jwt.verify(token, `${resolvedConfig.jwtSecret}-${secretKey}`)
     return result
   }
 
