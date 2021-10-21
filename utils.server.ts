@@ -9,6 +9,10 @@ import Boom from '@hapi/boom'
 type EnvVariable = string | undefined
 export const resolvedConfig = {
   useLocalAuth: process.env.USERNAME && process.env.PASSWORD,
+  externalJwtCookieName: process.env.EXTERNAL_JWT_COOKIE_NAME,
+  externalJwtPubkey: process.env.EXTERNAL_JWT_PUBKEY,
+  externalJwtAuthRedirectUrl: process.env.EXTERNAL_JWT_AUTH_REDIRECT_URL,
+  externalJwtAuthRedirectUrlParam: process.env.EXTERNAL_JWT_AUTH_REDIRECT_URL_PARAM,
   useGithub: process.env.GITHUB_ID && process.env.GITHUB_SECRET,
   jwtSecret: process.env.JWT_SECRET,
   isHosted: process.env.IS_HOSTED === 'true',

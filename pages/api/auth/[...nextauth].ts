@@ -29,12 +29,16 @@ export default NextAuth({
   adapter: Adapters.Prisma.Adapter({ prisma: prisma }),
 
   session: {
-    jwt: !!resolvedConfig.useLocalAuth,
+    jwt: !!resolvedConfig.useLocalAuth || !!resolvedConfig.externalJwtPubkey,
   },
 
   jwt: {
     secret: resolvedConfig.jwtSecret,
   },
+
+  pages: resolvedConfig.externalJwtPubkey ? {
+    error: "/api/auth_error",
+  } : {},
 
   callbacks: {
     session(session, user) {
