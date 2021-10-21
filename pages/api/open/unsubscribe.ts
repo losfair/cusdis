@@ -23,7 +23,7 @@ export default async function handler(
     const secret = `${resolvedConfig.jwtSecret}-unsubscribe`
 
     try {
-      const result = jwt.verify(token, secret) as {
+      const result = <any>jwt.verify(token, secret) as {
         type: UnSubscribeType
         userId: string
       }

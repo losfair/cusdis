@@ -24,7 +24,7 @@ export default async function handler(
     const secret = `${resolvedConfig.jwtSecret}-approve_comment`
 
     try {
-      const result = jwt.verify(token, secret) as {
+      const result = <any>jwt.verify(token, secret) as {
         commentId: string
       }
       await commentService.approve(result.commentId)
