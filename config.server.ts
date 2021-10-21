@@ -3,6 +3,7 @@ import { prisma, resolvedConfig } from './utils.server'
 import * as jwt from "jsonwebtoken";
 import * as fs from "fs";
 import { parse as parseCookie } from "cookie";
+import { IncomingMessage } from 'http';
 
 /**
  * Auth Providers
@@ -61,7 +62,17 @@ if (resolvedConfig.externalJwtPubkey) {
       name: 'External JWT',
       credentials: {},
       async authorize(credentials: {}, req) {
-        // `req.cookies` is empty
+        // `req.cookies` is empty and `req.headers` is not defined.
+        //
+        // Looking at `next-auth` and node sources:
+        //
+        // - https://github.com/nextauthjs/next-auth/blob/0fae0c7a8eb224964e38da409ecb9ba0497e8c50/src/server/routes/callback.js#L339
+        // - https://github.com/nodejs/node/blob/6ca23d7846cb47e84fd344543e394e50938540be/lib/_http_incoming.js#L107
+        //
+        // ...suggests that `req.headers` is implemented with a getter, but getters are not preserved across a spread operator.
+        //
+        // Here we work around this issue by explicitly re-assigning the `IncomingMessage` prototype.
+        Object.setPrototypeOf(req, IncomingMessage.prototype);
         const cookies = parseCookie(req.headers.cookie || "");
         const token = cookies[resolvedConfig.externalJwtCookieName];
         if(!token) {
