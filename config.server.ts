@@ -98,28 +98,20 @@ if (resolvedConfig.externalJwtPubkey) {
         }
 
         const name = "" + (decoded.display_name || decoded.name || sub);
-
-        if(Array.isArray(decoded.roles)) {
-          if(decoded.roles.findIndex(x => x == "cusdis_user") != -1) {
-            const user = await prisma.user.upsert({
-              where: {
-                id: sub,
-              },
-              create: {
-                id: sub,
-                name,
-              },
-              update: {
-                id: sub,
-                name,
-              },
-            })
-            return user;
-          }
-        }
-
-        console.log("no cusdis_user role");
-        return null;
+        const user = await prisma.user.upsert({
+          where: {
+            id: sub,
+          },
+          create: {
+            id: sub,
+            name,
+          },
+          update: {
+            id: sub,
+            name,
+          },
+        })
+        return user;
       }
     }),
   )
