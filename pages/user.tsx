@@ -1,5 +1,5 @@
 import { User } from "@prisma/client"
-import { Box, Button, Checkbox, Container, FormControl, FormLabel, Heading, HStack, Input, InputGroup, InputRightAddon, Switch, useToast, VStack } from "@chakra-ui/react"
+import { Box, Button, Checkbox, Container, FormControl, FormLabel, Heading, HStack, Input, InputGroup, InputRightAddon, Switch, Text, useToast, VStack } from "@chakra-ui/react"
 import React from "react"
 import { useMutation } from "react-query"
 import { Footer } from "../components/Footer"
@@ -91,7 +91,12 @@ function UserPage(props: {
       <Container maxWidth="5xl" mt={24}>
 
         <VStack alignItems="flex-start" spacing={12}>
-          <Heading>Hi, {props.session.user.name}</Heading>
+          <VStack alignItems="flex-start" spacing={2}>
+            <Heading>Hi, {props.session.user.name}</Heading>
+            <Text color="gray.500" fontSize="sm">
+              <code>UID: {props.session.uid}</code>
+            </Text>
+          </VStack>
 
           <VStack alignItems="flex-start" spacing={4}>
             <Heading size="md">Account</Heading>
